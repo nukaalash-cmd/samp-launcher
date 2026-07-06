@@ -17,8 +17,13 @@ jobs:
           ZIPFILE=$(find . -maxdepth 1 -name "*.zip" | head -n 1)
           if [ -n "$ZIPFILE" ]; then
             echo "Found $ZIPFILE, unzipping..."
-            unzip -o "$ZIPFILE" -d .
+            mkdir -p _extracted
+            unzip -o "$ZIPFILE" -d _extracted
             rm "$ZIPFILE"
+            SRC=$(dirname "$(find _extracted -maxdepth 4 -name 'build.gradle' | head -n 1)")
+            echo "Project root detected at: $SRC"
+            cp -r "$SRC"/. .
+            rm -rf _extracted
           fi
 
       - name: Set up JDK 17
